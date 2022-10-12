@@ -1,0 +1,10 @@
+Host a simple PHP website in a user home directory.
+
+1. Create a new user named Alice
+2. Create a sample web page under a directory named public_html (/home/Alice/public_html)
+3. Access the website using URL: myfirstwebsite.test and www.myfirstwebsite.test
+
+Webpage content:
+--------------------
+phpinfo();
+?>

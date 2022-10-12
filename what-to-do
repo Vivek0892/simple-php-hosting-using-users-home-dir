@@ -1,0 +1,48 @@
+Host a simple PHP website in a user home directory.
+
+    • Create an user as root and give root access 
+
+    • install httpd pakage - sudo yum install httpd -y
+
+    • install php and suppoting packages - sudo dnf install php php-mysqlnd php-mbstring php-opcache php-gd
+
+    • enable service of httpd - sudo systemctl enable --now httpd
+
+    • vim /etc/httpd/conf.d/userdir.conf -> 
+      “  <IfModule mod_userdir.c>
+             UserDir public_html
+	    </IfModule>
+         <Directory "/home/*/public_html">
+    			AllowOverride None
+    			Options MultiViews Indexes SymLinksIfOwnerMatch IncludesNoExec
+   				 Require method GET POST OPTIONS
+		</Directory>
+
+		<IfModule dir_module>
+		    DirectoryIndex sample.php
+		</IfModule>
+
+    • Give permission for home dir - sudo chmod a+x $HOME
+
+    • Make Document Root in home dir- mkdir public_html
+
+    • insert content in document root “public_html/sample.php”
+ 
+    • change context of document root -  sudo semanage fcontext -a -t httpd_sys_content_t "/home/alice/public_html/(/.*)?"
+
+    • set selinux boolean permanaently - sudo setsebool -p httpd_enable_homedirs on
+
+    • restart httpd - sudo systemctl restart httpd
+
+    • set vhost - sudo vim /etc/httpd/conf.d/alice.conf ->
+ <Directory /home/alice/public_html>
+               Require all granted
+               AllowOverride None
+      </Directory>
+      <VirtualHost *:80>
+              DocumentRoot /home/alice/public_html
+              Servername myfirstwebsite.com
+              ServerAdmin alice@myfirstwebsite.test
+      </VirtualHost>
+      
+    • resolve ip in hosts file locally
